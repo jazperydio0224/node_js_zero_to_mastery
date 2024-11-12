@@ -1,0 +1,68 @@
+Improving Node Performance
+1. Running Multiple Node Processes side by side
+
+                                 node js environment
+----------------> |      |         |    v8      | 
+----------------> |server|         | callstack  |
+----------------> |      |         |   libuv    |
+
+
+SOLUTION:
+                                node js environment
+                  |      |         |    v8      | 
+----------------> |server|         | callstack  |
+                  |      |         |   libuv    |
+
+
+
+                                node js environment
+                  |      |         |    v8      | 
+----------------> |server|         | callstack  |
+                  |      |         |   libuv    |
+
+
+                                node js environment
+                  |      |         |    v8      | 
+----------------> |server|         | callstack  |
+                  |      |         |   libuv    |                  
+
+
+NODE CLUSTER MODULE
+- allows you to create copies of your Node process that each run your server code 
+  side by side in parallel.
+
+node server.js
+      |
+master process _____________________
+      |            |               |
+      | fork()     | fork()        | fork()
+worker process    worker process  worker process
+
+
+LOAD BALANCING - In computing, load balancing refers to the process of distributing a set of tasks over a set of resources (computing units), with the aim of making their overall processing more efficient. Load balancing techniques can optimize the response time for each task, avoiding unevenly overloading cimpute nodes while other compute nodes are left idle.
+
+PM2 - PM2 is a daemon process manager that will help you manage and keep your application online 24/7.
+    - uses built-in cluster module from NodeJS.(We don't have to use the cluster module in our own code)
+
+pm2 start server.js - start running application
+pm2 stop 'name' or 'id' - stop an application
+pm2 delete 'name' or 'id' - remove an application
+pm2 start server.js -i max - maximizes number of instances (cpu cores) to use for clusters
+pm2 logs --lines 200 - lists down our logs based on last 'x' entries
+pm2 list - shows tabular list of currently running pm2 processes
+
+
+PM2 - MANAGING LIVE CLUSTERS WITH PM2
+pm2 delete server ---> delete all clusters
+
+pm2 start server.js -l logs.txt -i max ---> -l specifies the file where we want to record our logs. -i max maximizes the instances to use for our clusters based on the number of cpu cores.
+
+pm2 show [id] ---> details for each of our pm2 running clusters
+
+pm2 stop [id] ---> stops an individual process 
+
+pm2 monit - shows a live dashboard on our terminal that shows the status of our live processes
+
+
+PM2 - zero downtime restart
+pm2 reload server - restart processes/clusters one by one keeping at least one process running at all times
